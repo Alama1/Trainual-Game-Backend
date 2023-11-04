@@ -1,0 +1,6 @@
+{
+  "mongo": {
+    "authString": "mongodb+srv://Trainual-Game-Backend:<password>@cluster0.4palghz.mongodb.net/?retryWrites=true&w=majority",
+    "authPassword": ""
+  }
+}
