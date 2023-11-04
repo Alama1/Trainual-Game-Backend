@@ -1,17 +1,45 @@
 const {Schema, model} = require("mongoose");
 
-const schema = new Schema({
-    _id: String,
-    title: String,
-    description: String,
-    questions: {
-        all: Array,
-        correct: String
+const schema = new Schema(
+    {
+    _id: {
+        type: String,
+        required: [true, 'id is required.']
     },
-    created_by_id: String,
-    theme: String,
+    title: {
+        type: String,
+        required: [true, 'Title is required.']
+    },
+    description: {
+        type: String,
+        required: [true, 'Description is required.']
+    },
+    questions: {
+        all: {
+            type: Array,
+            validate: [arrayLimit, 'Questions array can only be 4 items long.']
+        },
+        correct: {
+            type: String,
+            required: [true, 'Specifying correct answer is required.']
+        }
+    },
+    created_by: {
+        type: String,
+        required: [true, 'Id of creator is required.']
+    },
+    theme: {
+        type: String,
+        required: [true, 'Theme of the card is required.'],
+        lowercase: true
+    },
     created: String
 })
+
+function arrayLimit(val) {
+    return val.length === 4;
+}
+
 const cardModel = model('card', schema)
 
 module.exports = cardModel

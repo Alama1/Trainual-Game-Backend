@@ -8,18 +8,52 @@ class ExpressManager {
 
     init() {
         this.express.use(Express.json())
-        this.express.use(this.auth.bind(this))
+        this.express.use(this.logger.bind(this))
+        this.express.use(this.validateBody.bind(this))
 
-        this.express.listen(3000)
+        this.express.post('/card', this.addANewCard.bind(this))
+        this.express.post('/table', this.createTable.bind(this))
+        this.express.get('/cards', this.getCardsWithTheme.bind(this))
+
+        this.express.listen(this.app.config.properties.express.port, () => {
+            console.log(`Listening on port ${this.app.config.properties.express.port}`)
+        })
+
     }
 
-    auth(req, res, next) {
-        console.log(`New request: ${JSON.stringify(req.body)}`)
+    logger(req, res, next) {
+        console.log(`New ${req.method} request for the route ${req.originalUrl}`)
         next()
     }
 
-    createTable() {
+    validateBody(req, res, next) {
+        const path = req.path
+        const method = req.method
+        if (path === '/cards' && method === 'GET') {
+            if (!req.query.hasOwnProperty('theme')) {
+                return res.status(422).json({
+                    status: 'Error',
+                    message: 'You need to specify theme in query params.'
+                })
+            }
+        }
 
+        if (path === '/card' && method === 'POST') {
+            if (!req.hasOwnProperty('body')) {
+                return res.status(422).json({
+                    status: 'Error',
+                    message: 'You need to have body in your request.'
+                })
+            }
+        }
+        next()
+    }
+
+    async createTable(req, res) {
+        console.log(req.body)
+        const newTableResponse = await this.app.database.createNewTable(req.body.table)
+        console.log(newTableResponse)
+        return res.status(200).json(newTableResponse)
     }
 
     connectUserToTheTable() {
@@ -30,8 +64,20 @@ class ExpressManager {
 
     }
 
-    addNewCardToTheTheme() {
+    async addANewCard(req, res) {
+        const newCardResponse = await this.app.database.createNewCard(req.body.card)
+        if (typeof newCardResponse.message === 'object') {
+            return res.status(422).json(newCardResponse)
+        }
+        if (newCardResponse.message === 'Card with this id already exists!') {
+            return res.status(409).json(newCardResponse)
+        }
+        res.status(200).json(newCardResponse)
+    }
 
+    async getCardsWithTheme(req, res) {
+        const getCardsResponse = await this.app.database.getCardsWithTheme(req.query.theme)
+        return res.status(200).json(getCardsResponse)
     }
 }
 

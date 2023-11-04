@@ -5,7 +5,11 @@ class Config {
     properties = {
         mongo: {
             authString: 'mongodb+srv://Trainual-Game-Backend:<password>@cluster0.4palghz.mongodb.net/?retryWrites=true&w=majority',
-            authPassword: ''
+            authPassword: '',
+            databaseName: 'test'
+        },
+        express: {
+            port: '3000'
         }
     }
     constructor() {
@@ -16,6 +20,7 @@ class Config {
             console.log('Config not found! Using default values.')
         }
         this.properties.mongo.authPassword = process.env.MONGO_PASSWORD
+        this.properties.express.port = process.env.EXPRESS_PORT
     }
 }
 
