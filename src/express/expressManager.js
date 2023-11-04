@@ -17,6 +17,22 @@ class ExpressManager {
         console.log(`New request: ${JSON.stringify(req.body)}`)
         next()
     }
+
+    createTable() {
+
+    }
+
+    connectUserToTheTable() {
+
+    }
+
+    createNewTheme() {
+
+    }
+
+    addNewCardToTheTheme() {
+
+    }
 }
 
 module.exports = ExpressManager
