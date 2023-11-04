@@ -12,7 +12,6 @@ class databaseManager {
         this.client = await mongoose.connect(this.config.mongo.authString.replace('<password>', this.config.mongo.authPassword), {
             dbName: this.app.config.properties.mongo.databaseName
         })
-        this.db = this.client.connection
 
         let modelNames = readdirSync(path.join(__dirname, 'models')).filter(file => file.endsWith('.js'))
         this.models = new Map()
@@ -81,6 +80,12 @@ class databaseManager {
                 return {
                     status: 'Error',
                     message: Object.values(e.errors).map(val => val.message)
+                }
+            }
+            if (e.code === 11000) {
+                return {
+                    status: 'Error',
+                    message: 'Table with this id already exists!'
                 }
             }
             return {

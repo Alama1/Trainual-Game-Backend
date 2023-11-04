@@ -20,7 +20,6 @@ class ExpressManager {
         this.express.listen(this.app.config.properties.express.port, () => {
             console.log(`Listening on port ${this.app.config.properties.express.port}`)
         })
-
     }
 
     logger(req, res, next) {

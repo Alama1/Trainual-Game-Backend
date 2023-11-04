@@ -4,7 +4,7 @@ const schema = new Schema(
     {
     _id: {
         type: String,
-        required: [true, 'id is required.']
+        required: [true, 'ID is required.']
     },
     title: {
         type: String,
@@ -26,7 +26,7 @@ const schema = new Schema(
     },
     created_by: {
         type: String,
-        required: [true, 'Id of creator is required.']
+        required: [true, 'ID of creator is required.']
     },
     theme: {
         type: String,
