@@ -1,4 +1,6 @@
 const Express = require('express')
+const {readdirSync} = require("fs");
+const path = require("path");
 
 class ExpressManager {
     constructor(app) {
@@ -11,11 +13,21 @@ class ExpressManager {
         this.express.use(this.logger.bind(this))
         this.express.use(this.validateBody.bind(this))
 
-        this.express.post('/card', this.addANewCard.bind(this))
-        this.express.post('/table', this.createTable.bind(this))
-        this.express.put('/table', this.addUserToTheTable.bind(this))
-        this.express.get('/cards', this.getCardsWithTheme.bind(this))
-        this.express.get('/tables', this.getAllTables.bind(this))
+        let routes = readdirSync(path.join(__dirname, 'routes')).filter(file => file.endsWith('.js'))
+        for (const  file of routes) {
+            const route = new (require(`./routes/${file}`))(this.app)
+            switch (route.method) {
+                case 'GET':
+                    this.express.get(route.path, route.handleRequest.bind(this))
+                    break
+                case 'POST':
+                    this.express.post(route.path, route.handleRequest.bind(this))
+                    break
+                case 'PUT':
+                    this.express.put(route.path, route.handleRequest.bind(this))
+                    break
+            }
+        }
 
         this.express.listen(this.app.config.properties.express.port, () => {
             console.log(`Listening on port ${this.app.config.properties.express.port}`)
@@ -48,48 +60,6 @@ class ExpressManager {
             }
         }
         next()
-    }
-
-    async createTable(req, res) {
-        const newTableResponse = await this.app.database.createNewTable(req.body.table)
-        //TODO status management
-        return res.status(200).json(newTableResponse)
-    }
-
-    async getAllTables(req, res) {
-        const getTablesResponse = await this.app.database.getAllTables()
-        if (getTablesResponse.status === 'Error') {
-            return res.status(500).json(getTablesResponse)
-        }
-        return res.status(200).json(getTablesResponse)
-    }
-
-    async addUserToTheTable(req, res) {
-        const newTableUser = await this.app.database.addTableUser(req.body.table, req.body.user)
-        if (newTableUser.message === 'This table already has such user.') {
-            return res.status(409).json(newTableUser)
-        }
-        return res.status(200).json(newTableUser)
-    }
-
-    createNewTheme() {
-
-    }
-
-    async addANewCard(req, res) {
-        const newCardResponse = await this.app.database.createNewCard(req.body.card)
-        if (typeof newCardResponse.message === 'object') {
-            return res.status(422).json(newCardResponse)
-        }
-        if (newCardResponse.message === 'Card with this id already exists!') {
-            return res.status(409).json(newCardResponse)
-        }
-        res.status(200).json(newCardResponse)
-    }
-
-    async getCardsWithTheme(req, res) {
-        const getCardsResponse = await this.app.database.getCardsWithTheme(req.query.theme)
-        return res.status(200).json(getCardsResponse)
     }
 }
 
