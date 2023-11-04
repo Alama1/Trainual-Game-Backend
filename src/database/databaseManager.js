@@ -89,6 +89,22 @@ class databaseManager {
             }
         }
     }
+
+    async getAllTables() {
+        const tableModel = this.models.get('table')
+        try {
+            const tables = await tableModel.find()
+            return {
+                status: 'Success!',
+                message: tables
+            }
+        } catch (e) {
+            return {
+                status: 'Error',
+                message: 'Unexpected error'
+            }
+        }
+    }
 }
 
 module.exports = databaseManager

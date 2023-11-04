@@ -14,6 +14,7 @@ class ExpressManager {
         this.express.post('/card', this.addANewCard.bind(this))
         this.express.post('/table', this.createTable.bind(this))
         this.express.get('/cards', this.getCardsWithTheme.bind(this))
+        this.express.get('/tables', this.getAllTables.bind(this))
 
         this.express.listen(this.app.config.properties.express.port, () => {
             console.log(`Listening on port ${this.app.config.properties.express.port}`)
@@ -50,10 +51,17 @@ class ExpressManager {
     }
 
     async createTable(req, res) {
-        console.log(req.body)
         const newTableResponse = await this.app.database.createNewTable(req.body.table)
-        console.log(newTableResponse)
+        //TODO status management
         return res.status(200).json(newTableResponse)
+    }
+
+    async getAllTables(req, res) {
+        const getTablesResponse = await this.app.database.getAllTables()
+        if (getTablesResponse.status === 'Error') {
+            return res.status(500).json(getTablesResponse)
+        }
+        return res.status(200).json(getTablesResponse)
     }
 
     connectUserToTheTable() {
