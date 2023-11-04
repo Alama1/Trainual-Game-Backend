@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const {readdirSync} = require("fs");
+const path = require("path");
 
 class databaseManager {
     constructor(app) {
@@ -13,7 +14,7 @@ class databaseManager {
         })
         this.db = this.client.connection
 
-        let modelNames = readdirSync('./src/database/models').filter(file => file.endsWith('.js'))
+        let modelNames = readdirSync(path.join(__dirname, 'models')).filter(file => file.endsWith('.js'))
         this.models = new Map()
         for (const  file of modelNames) {
             const model = (require(`./models/${file}`))
