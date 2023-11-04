@@ -105,6 +105,37 @@ class databaseManager {
             }
         }
     }
+
+    async addTableUser(tableID, user) {
+        const tableModel = this.models.get('table')
+        try {
+            const table = await tableModel.findOne({ _id: tableID })
+            if (!table) {
+                return {
+                    status: 'Error',
+                    message: 'There is no table with this name.'
+                }
+            }
+            if (table.members.includes(user)) {
+                return {
+                    status: 'Error',
+                    message: 'This table already has such user.'
+                }
+            }
+            table.members.push(user)
+            await table.save()
+            return {
+                status: 'Success!',
+                message: 'User was successfully added!'
+            }
+        } catch (e) {
+            console.log(e)
+            return {
+                status: 'Error',
+                message: 'Unexpected error'
+            }
+        }
+    }
 }
 
 module.exports = databaseManager
