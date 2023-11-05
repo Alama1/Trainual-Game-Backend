@@ -204,3 +204,65 @@ Status code 409:
     "message": "There is no table with this id."
 }
 </pre>
+
+<div><h1 style="color:darkgoldenrod">DELETE <span style="color:white">/table</span></h1></div>
+<p>Route is used to delete a table</p>
+<p>In request, you need to specify table id in query parameter id</p>
+<p>Responses:</p>
+<pre>
+Status code 200:
+{
+    "status": "Success!",
+        "message": {
+    "status": "Success!",
+    "message": {
+        "_id": "Test table 1",
+        "created_by": "User123",
+        "members": [
+            "Oleg@oleg.com",
+            "Sanya@sanya.com",
+            "Boris@gmail.com"
+        ],
+        "name": "new name",
+        "__v": 3
+        }
+    }
+}
+Status code 409:
+{
+    "status": "Error",
+    "message": "There is no table with this id."
+}
+</pre>
+<div><h1 style="color:darkgoldenrod">DELETE <span style="color:white">/card</span></h1></div>
+<p>Route is used to delete a table</p>
+<p>In request, you need to specify card id in query parameter id</p>
+<p>Responses:</p>
+<pre>
+Status code 200:
+{
+    "status": "Success!",
+    "message": {
+        "questions": {
+            "all": [
+                "question 1",
+                "question 2",
+                "question 3",
+                "question 4"
+            ],
+            "correct": "question 2"
+        },
+        "_id": "testId 5",
+        "title": "Some cool title",
+        "description": "Super cool description",
+        "created_by": "Oleg@gmail.com",
+        "theme": "very cool theme",
+        "__v": 0
+    }
+}
+Status code 409:
+{
+    "status": "Error",
+    "message": "There is no card with this id."
+}
+</pre>
