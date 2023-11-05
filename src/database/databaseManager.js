@@ -42,7 +42,6 @@ class databaseManager {
                     message: 'Card with this id already exists!'
                 }
             }
-            console.log(e)
             return {
                 status: 'Error',
                 message: 'Some unhandled error!'
@@ -56,12 +55,51 @@ class databaseManager {
             const cards = await cardModel.find({
                 theme: theme,
             })
+            if (cards.length === 0) {
+                return {
+                    status: 'Error',
+                    message: 'Cards with this theme were not found.'
+                }
+            }
+            const cardWithoutAnswer = cards.map((card) => {
+                card.questions.correct = undefined
+                return card
+            })
             return {
                 status: "Success!",
-                message: cards
+                message: cardWithoutAnswer
             }
         } catch (e) {
-            console.error(e)
+            return {
+                status: 'Error',
+                message: 'Unexpected error'
+            }
+        }
+    }
+
+    async getCardCorrectAnswer(id) {
+        const cardModel = this.models.get('card')
+        try {
+            const card = await cardModel.findOne({ _id: id })
+            if (!card) {
+                return {
+                    status: 'Error',
+                    message: 'Card with this is not found.'
+                }
+            }
+            return {
+                status: 'Success!',
+                message: {
+                    _id: card._id,
+                    title: card.title,
+                    correctAnswer: card.questions.correct
+                }
+            }
+        } catch (e) {
+            return {
+                status: 'Error',
+                message: 'Unexpected error'
+            }
         }
     }
 
@@ -111,6 +149,38 @@ class databaseManager {
         }
     }
 
+    async modifyTable(tableID, modifyList) {
+        const tableModel = this.models.get('table')
+        try {
+            const table = await tableModel.findById(tableID)
+            if (!table) {
+                return {
+                    status: 'Error',
+                    message: 'There is no table with this id.'
+                }
+            }
+            Object.keys(modifyList).forEach(function(key) {
+                if (key in table) {
+                    table[key] = modifyList[key];
+                }
+            })
+            await table.save()
+            return {
+                status: 'Success!',
+                message: 'Table was successfully updated!!'
+            }
+        } catch (e) {
+            return {
+                status: 'Error',
+                message: 'Unexpected error'
+            }
+        }
+    }
+
+    removeTable() {
+
+    }
+
     async addTableUser(tableID, user) {
         const tableModel = this.models.get('table')
         try {
@@ -118,7 +188,7 @@ class databaseManager {
             if (!table) {
                 return {
                     status: 'Error',
-                    message: 'There is no table with this name.'
+                    message: 'There is no table with this id.'
                 }
             }
             if (table.members.includes(user)) {

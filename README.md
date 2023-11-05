@@ -78,7 +78,7 @@ message: ["Table id is required.", "You need to specify who created this table."
 }
 </pre>
 
-<div><h1 style="color:darkgoldenrod">PUT <span style="color:white">/table</span></h1></div>
+<div><h1 style="color:darkgoldenrod">PUT <span style="color:white">/tablemember</span></h1></div>
 <p>Used to add a user to the table</p>
 <p>Example of the request body:</p>
 <pre>
@@ -166,5 +166,41 @@ Status code 200:
             "__v": 3
         }
     ]
+}
+</pre>
+
+<div><h1 style="color:darkgoldenrod">GET <span style="color:white">/cardanswer</span></h1></div>
+<p>Route is used to get a correct answer for the card</p>
+<p>Responses:</p>
+<pre>
+Status code 200:
+{
+    {
+    "status": "Success!",
+    "message": {
+        "_id": "Some id",
+        "title": "Some cool title",
+        "correctAnswer": "question 2"
+    }
+}
+Status code 404:
+{
+    "status": "Error",
+    "message": "Card with this is not found."
+}
+</pre>
+<div><h1 style="color:darkgoldenrod">PUT <span style="color:white">/table</span></h1></div>
+<p>Route is used to get a correct answer for the card</p>
+<p>Responses:</p>
+<pre>
+Status code 200:
+{
+    "status": "Success!",
+    "message": "Table was successfully updated!!"
+}
+Status code 409:
+{
+    "status": "Error",
+    "message": "There is no table with this id."
 }
 </pre>

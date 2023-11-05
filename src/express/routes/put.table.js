@@ -6,11 +6,11 @@ class PutTable {
     path = '/table'
 
     async handleRequest(req, res) {
-        const newTableUser = await this.app.database.addTableUser(req.body.table, req.body.user)
-        if (newTableUser.message === 'This table already has such user.') {
-            return res.status(409).json(newTableUser)
+        const newTable = await this.app.database.modifyTable(req.body.table, req.body.modify)
+        if (newTable.message === 'There is no table with this id.') {
+            return res.status(409).json(newTable)
         }
-        return res.status(200).json(newTableUser)
+        return res.status(200).json(newTable)
     }
 }
 
