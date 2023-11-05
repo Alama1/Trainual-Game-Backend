@@ -26,6 +26,8 @@ class ExpressManager {
                 case 'PUT':
                     this.express.put(route.path, route.handleRequest.bind(this))
                     break
+                case 'DELETE':
+                    this.express.delete(route.path, route.handleRequest.bind(this))
             }
         }
 

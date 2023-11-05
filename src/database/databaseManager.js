@@ -177,8 +177,48 @@ class databaseManager {
         }
     }
 
-    removeTable() {
+    async deleteTable(id) {
+        const tableModel = this.models.get('table')
+        try {
+            const table = await tableModel.findOneAndDelete({_id: id})
+            if (!table) {
+                return {
+                    status: 'Error',
+                    message: 'There is no table with this id.'
+                }
+            }
+            return {
+                status: 'Success!',
+                message: table
+            }
+        } catch (e) {
+            return {
+                status: 'Error',
+                message: 'Unexpected error'
+            }
+        }
+    }
 
+    async deleteCard(id) {
+        const cardModel = this.models.get('card')
+        try {
+            const card = await cardModel.findOneAndDelete({_id: id})
+            if (!card) {
+                return {
+                    status: 'Error',
+                    message: 'There is no card with this id.'
+                }
+            }
+            return {
+                status: 'Success!',
+                message: card
+            }
+        } catch (e) {
+            return {
+                status: 'Error',
+                message: 'Unexpected error'
+            }
+        }
     }
 
     async addTableUser(tableID, user) {
